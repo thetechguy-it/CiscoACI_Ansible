@@ -1,0 +1,23 @@
+# Import the ansible modules for cisco ACI
+- name: Import ACI modules
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  collections:
+    - cisco.aci
+
+# Load external credentials
+  vars_files:
+    - credentials.yml
+
+  tasks:
+  - name: Read variables from CSV
+    read_csv:
+      path: tenant_objects.csv
+    register: tenant_details
+
+  - name: Loop over CSV content
+    include_tasks: tasks/main.yml
+    loop: "{{ tenant_details.list }}"
+    loop_control:
+      loop_var: tenant_info
