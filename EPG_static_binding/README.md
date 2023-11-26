@@ -28,8 +28,8 @@ cd ANSIBLE_ACI/
 ### Clone the repo
 
 ```
-git clone https://github.com/thetechguy-it/ACI_EPG_static_binding.git
-cd ACI_EPG_static_binding/
+git clone git@github.com:thetechguy-it/CiscoACI_Ansible.git
+cd CiscoACI_Ansible/EPG_static_binding/
 ```
 
 ### Run the playbook
