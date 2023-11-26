@@ -30,7 +30,7 @@
         interface_mode: "{{ epg_info.interface_mode }}"
         interface_type: "{{ epg_info.interface_type }}"
         pod_id: "{{ epg_info.pod_id }}"
-        leafs: "{{ epg_info.leafs }}"
+        leafs: "{{ epg_info.leaf }}"
         interface: "{{ epg_info.interface_ipg }}"
         encap_id: "{{ epg_info.encap_id }}"
         deploy_immediacy: immediate
