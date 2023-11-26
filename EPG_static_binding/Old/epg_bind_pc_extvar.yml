@@ -1,0 +1,42 @@
+# Import the ansible modules for cisco ACI
+- name: Import ACI modules
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  collections:
+    - cisco.aci
+
+# Define the APIC URL, username and password
+  vars:
+    apic_url: "sandboxapicdc.cisco.com"
+    apic_user: "admin"
+    apic_password: "!v3G@!4@Y"
+
+# Read the CSV file
+  tasks:
+    - name: "Reading csv information"
+      read_csv:
+        path: epgs.csv
+      register: epgs_binding        
+      
+    # Create a static binding to the interface
+    - name: Deploy Static Path binding for given EPG
+      cisco.aci.aci_static_binding_to_epg:
+        host: "{{ apic_url }}"
+        username: "{{ apic_user }}"
+        password: "{{ apic_password }}"
+        validate_certs: no
+        tenant: "{{ epg_info.tenant }}"
+        ap: "{{ epg_info.apn }}"
+        epg: "{{ epg_info.name }}"
+        interface_mode: regular
+        interface_type: port_channel
+        pod_id: 1
+        leafs: 201
+        interface: "PC_Ansible_thetechguy"
+        encap_id: "{{ epg_info.vlan }}"
+        deploy_immediacy: immediate
+        state: present
+      loop: "{{ epgs_binding.list }}"
+      loop_control:
+        loop_var: epg_info 

@@ -1,0 +1,4 @@
+tenant,vrf,ap,epg,preferred_group,bd,l3out,enable_routing,gateway_ip,gateway_mask,gateway_scope,domain_name,domain_type,contract,contract_type
+PROD,PROD_VRF,PROD_ANP,TEST-1_EPG,true,TEST-1_BD,L3Out_TEST,true,192.168.1.1,24,public,PHY-DOM_thetechguy,phys,TEST_CRT,consumer
+PROD,PROD_VRF,PROD_ANP,TEST-2_EPG,true,TEST-2_BD,L3Out_TEST,true,192.168.2.1,24,public,PHY-DOM_thetechguy,phys,TEST_CRT,provider
+PROD,PROD_VRF,TEST_ANP,TEST-3_EPG,true,TEST-3_BD,L3Out_TEST,true,192.168.3.1,24,public,PHY-DOM_thetechguy,phys,TEST_CRT,provider

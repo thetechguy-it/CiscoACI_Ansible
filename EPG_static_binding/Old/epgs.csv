@@ -1,0 +1,5 @@
+name,vlan,apn,tenant
+VLAN-On-Air-Prod_EPG2,2,PROD_ANP,PROD
+VLAN-On-Air-Prod_EPG3,3,PROD_ANP,PROD
+VLAN-On-Air-Prod_EPG4,4,PROD_ANP,PROD
+VLAN-On-Air-Prod_EPG5,5,TEST_ANP,PROD
