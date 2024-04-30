@@ -1,0 +1,40 @@
+# Import the ansible modules for Cisco ACI
+- name: Import ACI modules
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  collections:
+    - cisco.aci
+
+# Load external credentials
+  vars_files:
+    - credentials.yml
+
+# Common connection parameters
+  vars:
+    apic_connection: &apic_connection
+      host: "{{ apic_url }}"
+      username: "{{ apic_user }}"
+      password: "{{ apic_password }}"
+      validate_certs: no
+
+# Read the CSV file
+  tasks:
+    - name: "Reading csv information"
+      read_csv:
+        path: data.csv
+      register: vpc_domain
+
+    # vPC Domain Configuration
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_switch_policy_vpc_protection_group_module.html#
+    - name: "vPC Domain Configuration"
+      cisco.aci.aci_switch_policy_vpc_protection_group:
+        <<: *apic_connection
+        protection_group: "{{ vpc.vPC_Domain_Name }}"
+        protection_group_id: "{{ vpc.vPC_ID }}"
+        switch_1_id: "{{ vpc.vPC_Switch1_ID }}"
+        switch_2_id: "{{ vpc.vPC_Switch2_ID }}"
+        vpc_domain_policy: "default"
+      loop: "{{ vpc_domain.list }}"
+      loop_control:
+        loop_var: vpc

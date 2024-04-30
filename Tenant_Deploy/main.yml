@@ -1,0 +1,154 @@
+# Import the ansible modules for Cisco ACI
+- name: Import ACI modules
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  collections:
+    - cisco.aci
+
+# Load external credentials
+  vars_files:
+    - credentials.yml
+
+# Common connection parameters
+  vars:
+    apic_connection: &apic_connection
+      host: "{{ apic_url }}"
+      username: "{{ apic_user }}"
+      password: "{{ apic_password }}"
+      validate_certs: no
+
+# Read the CSV file
+  tasks:
+    - name: "Reading csv information"
+      read_csv:
+        path: data.csv
+      register: tenant_deploy
+
+    # DEPLOY: TENANT
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_tenant_module.html
+    - name: "DEPLOY: TENANT"
+      cisco.aci.aci_tenant:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        description: ""
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.TENANT_EXIST == "no"
+
+    # DEPLOY: VRFs
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_vrf_module.html
+    - name: "DEPLOY: VRFs"
+      cisco.aci.aci_vrf:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        vrf: "{{ item.VRF }}"
+        preferred_group: "{{ item.VRF_PREFERRED }}"
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.VRF_EXIST == "no"
+
+    # DEPLOY: BDs
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_module.html
+    - name: "DEPLOY: BDs"
+      cisco.aci.aci_bd:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        bd: "{{ item.BD }}"
+        vrf: "{{ item.VRF }}"
+        description: "{{ item.EPG_BD_DESCR }}"
+        l2_unknown_unicast: "{{ item.L2_UNKUNICAST }}"
+        arp_flooding: "{{ item.ARP_FLOODING }}"
+        enable_routing: "{{ item.ROUTING }}"
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+
+    # DEPLOY: ANPs
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_ap_module.html
+    - name: "DEPLOY: ANPs"
+      cisco.aci.aci_ap:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        ap: "{{ item.ANP }}"
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.ANP_EXIST == "no"
+
+    # DEPLOY: EPGs
+    - name: "DEPLOY: EPGs"
+      cisco.aci.aci_epg:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        ap: "{{ item.ANP }}"
+        epg: "{{ item.EPG }}"
+        description: "{{ item.EPG_BD_DESCR }}"
+        preferred_group: "{{ item.EPG_PREFERRED }}"
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.EPG | length > 0
+
+    # DEPLOY: DOMAIN TO EPG
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_module.html
+    - name: "DEPLOY: DOMAIN TO EPG"
+      cisco.aci.aci_epg_to_domain:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        ap: "{{ item.ANP }}"
+        epg: "{{ item.EPG }}"
+        domain: "{{ item.DOMAIN }}"
+        domain_type: "{{ item.DOMAIN_TYPE }}" # phys|vmm
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.DOMAIN | length > 0
+
+    # DEPLOY: SUBNET
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_subnet_module.html
+    - name: "DEPLOY: SUBNET"
+      cisco.aci.aci_bd_subnet:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        bd: "{{ item.BD }}"
+        gateway: "{{ item.GW }}"
+        mask: "{{ item.MASK }}"
+        preferred: "{{ item.GW_PRIMARY }}"
+        scope: "{{ item.SUBNET_SCOPE }}"
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.GW | length > 0
+
+    # DEPLOY: Add a new provider contract
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_contract_module.html
+    - name: "DEPLOY: Add a new provider contract"
+      cisco.aci.aci_epg_to_contract:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        ap: "{{ item.ANP }}"
+        epg: "{{ item.EPG }}"
+        contract: "{{ item.PROV_CONTRACT }}"
+        contract_type: provider
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.PROV_CONTRACT | length > 0
+
+    # DEPLOY: Add a new consumer contract
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_contract_module.html
+    - name: "DEPLOY: Add a new consumer contract"
+      cisco.aci.aci_epg_to_contract:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        ap: "{{ item.ANP }}"
+        epg: "{{ item.EPG }}"
+        contract: "{{ item.CONS_CONTRACT }}"
+        contract_type: consumer
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.CONS_CONTRACT | length > 0

@@ -14,7 +14,7 @@
   tasks:
     - name: "Reading csv information"
       read_csv:
-        path: epgs.csv
+        path: data.csv
       register: epgs_binding        
       
     # Create a static binding to the interface

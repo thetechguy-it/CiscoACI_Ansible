@@ -1,0 +1,37 @@
+# Import the ansible modules for Cisco ACI
+- name: Import ACI modules
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  collections:
+    - cisco.aci
+
+# Load external credentials
+  vars_files:
+    - credentials.yml
+
+# Common connection parameters
+  vars:
+    apic_connection: &apic_connection
+      host: "{{ apic_url }}"
+      username: "{{ apic_user }}"
+      password: "{{ apic_password }}"
+      validate_certs: no
+
+# Read the CSV file
+  tasks:
+    - name: "Reading csv information"
+      read_csv:
+        path: data.csv
+      register: leaf_interface_profile
+
+    # Leaf Interface Profile
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_leaf_profile_module.html
+    - name: "Leaf Interface Profile"
+      cisco.aci.aci_interface_policy_leaf_profile:
+        <<: *apic_connection
+        interface_profile: "{{ leaf_int_prof.name }}"
+        description:  "{{ leaf_int_prof.description }}"
+      loop: "{{ leaf_interface_profile.list }}"
+      loop_control:
+        loop_var: leaf_int_prof

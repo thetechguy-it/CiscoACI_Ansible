@@ -1,6 +1,9 @@
 # CiscoACI_Ansible
 In this repository you will find some of Ansible playbooks for common and repetitive Cisco ACI tasks.    
-Each folder has an indipendent playbook with relative variable/CSV files.    
+Each folder has an indipendent playbook with relative variable/CSV files, please remember to change credentials and APIC URL each time.
+The folder has 2 CSV file
+* simple: this is a file where you can find some examples of how to complete the "data.csv" file
+* data: this is the important file. The playbook will open the file called "data.csv", don't change the name.    
 
 Clone the repository to gain access to all the playboooks.    
 Enjoy :wink:
