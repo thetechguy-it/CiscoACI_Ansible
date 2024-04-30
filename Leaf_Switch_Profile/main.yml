@@ -25,29 +25,30 @@
         path: data.csv
       register: leaf_switch_profile
 
-    # Leaf Switch Policy Group 
+    # Leaf Switch Policy Group
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_access_switch_policy_group_module.html
-    - name: "Leaf Switch Profile"
-      cisco.aci.aci_switch_policy_leaf_profile:
+    - name: "Leaf Switch Policy Group"
+      cisco.aci.aci_access_switch_policy_group:
         <<: *apic_connection
         name: "{{ leaf_sw_policy_group.policy_group }}"
         switch_type: "{{ leaf_sw_policy_group.switch_type }}"
       loop: "{{ leaf_switch_profile.list }}"
+      when: leaf_sw_policy_group.policy_group_exist == "no"
       loop_control:
         loop_var: leaf_sw_policy_group
 
-    # Leaf Switch Profile 
+    # Leaf Switch Profile
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_fabric_leaf_profile_module.html
     - name: "Leaf Switch Profile"
       cisco.aci.aci_switch_policy_leaf_profile:
         <<: *apic_connection
-        leaf_profile: "{{ leaf_sw_prof_int_prof.leaf_profile }}"
+        name: "{{ leaf_sw_prof_int_prof.leaf_profile }}"
         description: "{{ leaf_sw_prof_int_prof.leaf_profile_descr }}"
       loop: "{{ leaf_switch_profile.list }}"
       loop_control:
         loop_var: leaf_sw_prof_int_prof
 
-    # Leaf Switch Profile Interface Profile 
+    # Leaf Switch Profile Interface Profile
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_selector_to_switch_policy_leaf_profile_module.html
     - name: "Leaf Switch Profile Interface - Switch Policy association"
       cisco.aci.aci_interface_selector_to_switch_policy_leaf_profile:
@@ -57,8 +58,8 @@
       loop: "{{ leaf_switch_profile.list }}"
       loop_control:
         loop_var: leaf_sw_sel
-        
-    # Leaf Switch Profile Selector 
+
+    # Leaf Switch Profile Selector
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_switch_leaf_selector_module.html
     - name: "Leaf Switch Profile - Switch Selector"
       cisco.aci.aci_switch_leaf_selector:
@@ -71,10 +72,4 @@
         policy_group: "{{ leaf_sw_prof.policy_group }}"
       loop: "{{ leaf_switch_profile.list }}"
       loop_control:
-        loop_var: leaf_sw_prof  
-   
-
- 
-
-
-
+        loop_var: leaf_sw_prof
