@@ -22,7 +22,39 @@ cd Tenant_Deploy/
 
 
 ### Varibables
+To test the code you have to change the following files:   
+- **credentials.yml**: Edit this file with your own APIC URL/Username/Password. If you are doing some test in the Cisco Sandbox, you don't have to edit it
+- **data.csv**: Edit this file with your own fabric information. I would liked to review with you all the column in the CSV file:
+    - **TENANT**: The Tenant name
+    - **TENANT_EXIST**: Depending on your environment, you want or you would not want to create this policy:
+        - **no**: Create the policy in the "TENANT" field
+        - **yes**: Skip and do not override the policy
+    - **VRF**: The VRF name
+    - **VRF_EXIST**: Depending on your environment, you want or you would not want to create this policy:
+        - **no**: Create the policy in the "VRF" field
+        - **yes**: Skip and do not override the policy
+    - **VRF_PREFERRED**: Enable/Disable the preferred group [disabled, enabled]
+    - **BD**: The Bridge Domain name
+    - **L2_UNKUNICAST**: Enable the L2 Unkown Unicast Flooding [flood]
+    - **ARP_FLOODING**: Enable the ARP Flooding [true, false]
+    - **ROUTING**: Enable the Unicast Routing flag [true, false]
+    - **GW**: IP Address of the Subnet (i.e. "192.168.1.254")
+    - **MASK**: Mask of the Subnet (i.e. "24")
+    - **GW_PRIMARY**: Enable the "Primary" fuction of the subnet [true, false]
+    - **SUBNET_SCOPE**: Specify if the subnet is [private, public]
+    - **ANP**: The Application Profile name
+    - **ANP_EXIST**: Depending on your environment, you want or you would not want to create this policy:
+        - **no**: Create the policy in the "ANP" field
+        - **yes**: Skip and do not override the policy
+    - **EPG**: The EPG name
+    - **DOMAIN_TYPE**: The domain type [phys, vmm]
+    - **DOMAIN**: The domain name
+    - **EPG_PREFERRED**:Enable/Disable the preferred group [disabled, enabled]
+    - **EPG_BD_DESCR**: The EPG/BD description, for a network centric migration I usually punt "VLAN - VLAN_ID" --> "VLAN - 10"
+    - **PROV_CONTRACT**: The name of the provided contract
+    - **CONS_CONTRACT**: The name of the consumer contract
 
+If you want to see an example, open the "simple.csv".
 
 ### Run the playbook
 
