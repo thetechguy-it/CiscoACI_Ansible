@@ -50,7 +50,7 @@ That's it, nothing more.
 
 ### Run the playbook
 
-After changing the "credentials.yml" and "epgs_csv" files, you can run the playbook. I recommend you to test it in the Cisco Sabdbox before pushing in the production:
+After changing the "credentials.yml" and "data.csv" files, you can run the playbook. I recommend you to test it in the Cisco Sabdbox before pushing in the production:
 
 ```
 ansible-playbook main.yml
