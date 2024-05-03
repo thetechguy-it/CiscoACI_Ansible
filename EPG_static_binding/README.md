@@ -24,7 +24,7 @@ cd EPG_static_binding/
 ### Varibables
 To test the code you have to change the following files:   
 - **credentials.yml**: Edit this file with your own APIC URL/Username/Password. If you are doing some test in the Cisco Sandbox, you don't have to edit it
-- **epgs.csv**: Edit this file with your own EPG and port details. I would liked to review with you all the column in the CSV file:
+- **data.csv**: Edit this file with your own fabric information. I would liked to review with you all the column in the CSV file:
   - **epg**: The name of the EPG
   - **encap_id**: The VLAN ID related to the EPG
   - **ap**: The name of the Application Profile
