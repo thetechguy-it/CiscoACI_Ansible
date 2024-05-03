@@ -17,7 +17,7 @@ git clone git@github.com:thetechguy-it/CiscoACI_Ansible.git
 ### Tenant_Deploy
 
 ```
-cd Tenant_Deploy/
+cd CiscoACI_Ansible/Tenant_Deploy/
 ```
 
 

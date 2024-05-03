@@ -17,7 +17,7 @@ git clone git@github.com:thetechguy-it/CiscoACI_Ansible.git
 ### Leaf_Switch_Profile
 
 ```
-cd Leaf_Switch_Profile/
+cd CiscoACI_Ansible/Leaf_Switch_Profile/
 ```
 
 

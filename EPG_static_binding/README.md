@@ -17,7 +17,7 @@ git clone git@github.com:thetechguy-it/CiscoACI_Ansible.git
 ### EPG_static_binding
 
 ```
-cd EPG_static_binding/
+cd CiscoACI_Ansible/EPG_static_binding/
 ```
 
 

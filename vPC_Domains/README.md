@@ -17,7 +17,7 @@ git clone git@github.com:thetechguy-it/CiscoACI_Ansible.git
 ### vPC_Domains
 
 ```
-cd vPC_Domains/
+cd CiscoACI_Ansible/vPC_Domains/
 ```
 
 
