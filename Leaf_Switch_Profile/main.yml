@@ -27,7 +27,7 @@
 
     # Leaf Switch Policy Group
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_access_switch_policy_group_module.html
-    - name: "Leaf Switch Policy Group"
+    - name: Deploy Leaf Switch Policy Group
       cisco.aci.aci_access_switch_policy_group:
         <<: *apic_connection
         name: "{{ leaf_sw_policy_group.policy_group }}"
@@ -39,7 +39,7 @@
 
     # Leaf Switch Profile
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_fabric_leaf_profile_module.html
-    - name: "Leaf Switch Profile"
+    - name: Deploy Leaf Switch Profile
       cisco.aci.aci_switch_policy_leaf_profile:
         <<: *apic_connection
         name: "{{ leaf_sw_prof_int_prof.leaf_profile }}"
@@ -50,7 +50,7 @@
 
     # Leaf Switch Profile Interface Profile
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_selector_to_switch_policy_leaf_profile_module.html
-    - name: "Leaf Switch Profile Interface - Switch Policy association"
+    - name: Leaf Switch Profile Interface - Switch Policy association
       cisco.aci.aci_interface_selector_to_switch_policy_leaf_profile:
         <<: *apic_connection
         leaf_profile: "{{ leaf_sw_sel.leaf_profile }}"
@@ -61,7 +61,7 @@
 
     # Leaf Switch Profile Selector
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_switch_leaf_selector_module.html
-    - name: "Leaf Switch Profile - Switch Selector"
+    - name: Leaf Switch Profile - Switch Selector association
       cisco.aci.aci_switch_leaf_selector:
         <<: *apic_connection
         leaf_profile: "{{ leaf_sw_prof.leaf_profile }}"

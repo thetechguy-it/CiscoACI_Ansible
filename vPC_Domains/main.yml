@@ -27,7 +27,7 @@
 
     # vPC Domain Configuration
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_switch_policy_vpc_protection_group_module.html#
-    - name: "vPC Domain Configuration"
+    - name: vPC Domain Configuration
       cisco.aci.aci_switch_policy_vpc_protection_group:
         <<: *apic_connection
         protection_group: "{{ vpc.vPC_Domain_Name }}"

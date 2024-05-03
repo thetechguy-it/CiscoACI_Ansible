@@ -25,9 +25,9 @@
         path: data.csv
       register: leaf_interface_profile
 
-    # Leaf Interface Profile
+    # Deploy Leaf Interface Profile
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_interface_policy_leaf_profile_module.html
-    - name: "Leaf Interface Profile"
+    - name: Deploy Leaf Interface Profile
       cisco.aci.aci_interface_policy_leaf_profile:
         <<: *apic_connection
         interface_profile: "{{ leaf_int_prof.name }}"

@@ -25,9 +25,9 @@
         path: data.csv
       register: tenant_deploy
 
-    # DEPLOY: TENANT
+    # Deploy Tenant
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_tenant_module.html
-    - name: "DEPLOY: TENANT"
+    - name: Deploy Tenant
       cisco.aci.aci_tenant:
         <<: *apic_connection
         tenant: "{{ item.TENANT }}"
@@ -37,9 +37,9 @@
       loop: "{{ tenant_deploy.list }}"
       when: item.TENANT_EXIST == "no"
 
-    # DEPLOY: VRFs
+    # Deploy VRFs
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_vrf_module.html
-    - name: "DEPLOY: VRFs"
+    - name: Deploy VRFs
       cisco.aci.aci_vrf:
         <<: *apic_connection
         tenant: "{{ item.TENANT }}"
@@ -50,9 +50,9 @@
       loop: "{{ tenant_deploy.list }}"
       when: item.VRF_EXIST == "no"
 
-    # DEPLOY: BDs
+    # Deploy BDs
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_module.html
-    - name: "DEPLOY: BDs"
+    - name: Deploy BDs
       cisco.aci.aci_bd:
         <<: *apic_connection
         tenant: "{{ item.TENANT }}"
@@ -66,9 +66,9 @@
         annotation: ""
       loop: "{{ tenant_deploy.list }}"
 
-    # DEPLOY: ANPs
+    # Deploy Application Profiles
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_ap_module.html
-    - name: "DEPLOY: ANPs"
+    - name: Deploy Application Profiles
       cisco.aci.aci_ap:
         <<: *apic_connection
         tenant: "{{ item.TENANT }}"
@@ -78,8 +78,9 @@
       loop: "{{ tenant_deploy.list }}"
       when: item.ANP_EXIST == "no"
 
-    # DEPLOY: EPGs
-    - name: "DEPLOY: EPGs"
+    # Deploy EPGs
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_module.html
+    - name: Deploy EPGs
       cisco.aci.aci_epg:
         <<: *apic_connection
         tenant: "{{ item.TENANT }}"
@@ -92,9 +93,9 @@
       loop: "{{ tenant_deploy.list }}"
       when: item.EPG | length > 0
 
-    # DEPLOY: DOMAIN TO EPG
-    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_module.html
-    - name: "DEPLOY: DOMAIN TO EPG"
+    # Associate Domain to EPG
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_domain_module.html
+    - name: Associate Domain to EPG
       cisco.aci.aci_epg_to_domain:
         <<: *apic_connection
         tenant: "{{ item.TENANT }}"
@@ -107,9 +108,9 @@
       loop: "{{ tenant_deploy.list }}"
       when: item.DOMAIN | length > 0
 
-    # DEPLOY: SUBNET
+    # Associate Subnet to BD
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_subnet_module.html
-    - name: "DEPLOY: SUBNET"
+    - name: Associate Subnet to BD
       cisco.aci.aci_bd_subnet:
         <<: *apic_connection
         tenant: "{{ item.TENANT }}"
@@ -123,9 +124,9 @@
       loop: "{{ tenant_deploy.list }}"
       when: item.GW | length > 0
 
-    # DEPLOY: Add a new provider contract
+    # Associate provider contract to EPG
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_contract_module.html
-    - name: "DEPLOY: Add a new provider contract"
+    - name: Associate provider contract to EPG
       cisco.aci.aci_epg_to_contract:
         <<: *apic_connection
         tenant: "{{ item.TENANT }}"
@@ -138,9 +139,9 @@
       loop: "{{ tenant_deploy.list }}"
       when: item.PROV_CONTRACT | length > 0
 
-    # DEPLOY: Add a new consumer contract
+    # Associate consumer contract to EPG
     # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_contract_module.html
-    - name: "DEPLOY: Add a new consumer contract"
+    - name: Associate consumer contract to EPG
       cisco.aci.aci_epg_to_contract:
         <<: *apic_connection
         tenant: "{{ item.TENANT }}"

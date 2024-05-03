@@ -10,20 +10,27 @@
   vars_files:
     - credentials.yml
 
+# Common connection parameters
+  vars:
+    apic_connection: &apic_connection
+      host: "{{ apic_url }}"
+      username: "{{ apic_user }}"
+      password: "{{ apic_password }}"
+      validate_certs: no
+
 # Read the CSV file
   tasks:
     - name: "Reading csv information"
       read_csv:
         path: data.csv
-      register: epgs_binding        
+      register: epgs_binding
+    
       
     # Create a static binding to the interface
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_static_binding_to_epg_module.html
     - name: Deploy Static Path binding for given EPG
       cisco.aci.aci_static_binding_to_epg:
-        host: "{{ apic_url }}"
-        username: "{{ apic_user }}"
-        password: "{{ apic_password }}"
-        validate_certs: no
+        <<: *apic_connection
         tenant: "{{ epg_info.tenant }}"
         ap: "{{ epg_info.ap }}"
         epg: "{{ epg_info.epg }}"
