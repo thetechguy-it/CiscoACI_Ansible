@@ -46,7 +46,7 @@ To test the code you have to change the following files:
     - **tagged**, **regular** or **trunk**: Use this label if you want to deploy this EPG as tagged in this port/IPG.  
 - **main.yml**: This is the main code, you don't have to edit it.
 
-That's it, nothing more.
+If you want to see an example, open the "simple.csv".
 
 ### Run the playbook
 
