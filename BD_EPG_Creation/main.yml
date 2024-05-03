@@ -1,0 +1,118 @@
+# Import the ansible modules for Cisco ACI
+- name: Import ACI modules
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  collections:
+    - cisco.aci
+
+# Load external credentials
+  vars_files:
+    - credentials.yml
+
+# Common connection parameters
+  vars:
+    apic_connection: &apic_connection
+      host: "{{ apic_url }}"
+      username: "{{ apic_user }}"
+      password: "{{ apic_password }}"
+      validate_certs: no
+
+# Read the CSV file
+  tasks:
+    - name: "Reading csv information"
+      read_csv:
+        path: data.csv
+      register: tenant_deploy
+
+    # Deploy BDs
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_module.html
+    - name: Deploy BDs
+      cisco.aci.aci_bd:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        bd: "{{ item.BD }}"
+        vrf: "{{ item.VRF }}"
+        description: "{{ item.EPG_BD_DESCR }}"
+        l2_unknown_unicast: "{{ item.L2_UNKUNICAST }}"
+        arp_flooding: "{{ item.ARP_FLOODING }}"
+        enable_routing: "{{ item.ROUTING }}"
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+
+    # Deploy EPGs
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_module.html
+    - name: Deploy EPGs
+      cisco.aci.aci_epg:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        ap: "{{ item.ANP }}"
+        epg: "{{ item.EPG }}"
+        description: "{{ item.EPG_BD_DESCR }}"
+        preferred_group: "{{ item.EPG_PREFERRED }}"
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.EPG | length > 0
+
+    # Associate Domain to EPG
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_domain_module.html
+    - name: Associate Domain to EPG
+      cisco.aci.aci_epg_to_domain:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        ap: "{{ item.ANP }}"
+        epg: "{{ item.EPG }}"
+        domain: "{{ item.DOMAIN }}"
+        domain_type: "{{ item.DOMAIN_TYPE }}" # phys|vmm
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.DOMAIN | length > 0
+
+    # Associate Subnet to BD
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_bd_subnet_module.html
+    - name: Associate Subnet to BD
+      cisco.aci.aci_bd_subnet:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        bd: "{{ item.BD }}"
+        gateway: "{{ item.GW }}"
+        mask: "{{ item.MASK }}"
+        preferred: "{{ item.GW_PRIMARY }}"
+        scope: "{{ item.SUBNET_SCOPE }}"
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.GW | length > 0
+
+    # Associate provider contract to EPG
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_contract_module.html
+    - name: Associate provider contract to EPG
+      cisco.aci.aci_epg_to_contract:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        ap: "{{ item.ANP }}"
+        epg: "{{ item.EPG }}"
+        contract: "{{ item.PROV_CONTRACT }}"
+        contract_type: provider
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.PROV_CONTRACT | length > 0
+
+    # Associate consumer contract to EPG
+    # https://docs.ansible.com/ansible/latest/collections/cisco/aci/aci_epg_to_contract_module.html
+    - name: Associate consumer contract to EPG
+      cisco.aci.aci_epg_to_contract:
+        <<: *apic_connection
+        tenant: "{{ item.TENANT }}"
+        ap: "{{ item.ANP }}"
+        epg: "{{ item.EPG }}"
+        contract: "{{ item.CONS_CONTRACT }}"
+        contract_type: consumer
+        state: present
+        annotation: ""
+      loop: "{{ tenant_deploy.list }}"
+      when: item.CONS_CONTRACT | length > 0
