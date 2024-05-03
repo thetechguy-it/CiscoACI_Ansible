@@ -14,10 +14,10 @@ Via SSH:
 git clone git@github.com:thetechguy-it/CiscoACI_Ansible.git
 ```
 
-### BD_EPG_Creation
+### BD_EPG_CBD_EPG_Deployreation
 
 ```
-cd CiscoACI_Ansible/BD_EPG_Creation/
+cd CiscoACI_Ansible/BD_EPG_Deploy/
 ```
 
 
