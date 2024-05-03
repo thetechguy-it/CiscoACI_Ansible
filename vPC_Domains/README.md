@@ -26,7 +26,7 @@ To test the code you have to change the following files:
 - **credentials.yml**: Edit this file with your own APIC URL/Username/Password. If you are doing some test in the Cisco Sandbox, you don't have to edit it
 - **data.csv**: Edit this file with your own fabric information. I would liked to review with you all the column in the CSV file:
     - **vPC_Domain_Name**: The vPC Domain policy name
-    -**vPC_ID**: The ID of your vPC Domain. Usually I put the lowest ID between the two vPC peers
+    - **vPC_ID**: The ID of your vPC Domain. Usually I put the lowest ID between the two vPC peers
     - **vPC_Switch1_ID**: The Node ID of the first Switch
     - **vPC_Switch2_ID**: The Node ID of the second Switch
 
